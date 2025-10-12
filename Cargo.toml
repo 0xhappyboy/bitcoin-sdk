@@ -1,0 +1,12 @@
+[package]
+name = "bitcoin-sdk"
+version = "0.1.0"
+edition = "2024"
+authors = ["happyboy <superhappyboy1995@gmail.com>"]
+description = "bitcoin rust sdk"
+keywords = ["trade", "crypto", "finance", "bitcoin"]
+license = "GPL-3.0"
+readme = "README.md"
+repository = "https://github.com/0xhappyboy/bitcoin-sdk"
+
+[dependencies]
