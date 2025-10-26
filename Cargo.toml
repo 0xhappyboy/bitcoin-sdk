@@ -1,6 +1,6 @@
 [package]
 name = "bitcoin-sdk"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["happyboy <superhappyboy1995@gmail.com>"]
 description = "bitcoin rust sdk"
@@ -10,3 +10,18 @@ readme = "README.md"
 repository = "https://github.com/0xhappyboy/bitcoin-sdk"
 
 [dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hex = "0.4"
+base64 = "0.21"
+sha2 = "0.10"
+ripemd = "0.1"
+secp256k1 = "0.27"
+rand = "0.8"
+bech32 = "0.9"
+anyhow = "1.0"
+log = "0.4"
+pretty_env_logger = "0.5"
+bs58 = "0.5.1"

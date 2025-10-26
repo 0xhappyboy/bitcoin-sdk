@@ -2,7 +2,7 @@
     Bitcoin NetWork SDK
 </h1>
 <h4 align="center">
-The bitcoin network SDK is based on the most basic cryptographic library and includes commonly used API functions.
+基于最基本密码库实现的bitcoin网络SDK,包含了常用的API功能.
 </h4>
 <p align="center">
   <a href="https://github.com/0xhappyboy/aptos-network-sdk/LICENSE"><img src="https://img.shields.io/badge/License-GPL3.0-d1d1f6.svg?style=flat&labelColor=1C2C2E&color=BEC5C9&logo=googledocs&label=license&logoColor=BEC5C9" alt="License"></a>
@@ -11,27 +11,26 @@ The bitcoin network SDK is based on the most basic cryptographic library and inc
 <a href="./README_zh-CN.md">简体中文</a> | <a href="./README.md">English</a>
 </p>
 
-# Example
+# 案例
 
-## Creating a Bitcoin client and getting blockchain information
+## 创建比特币客户端和获取区块链信息
 
 ```rust
 use bitcoin_lib::{BitcoinClient, BitcoinClientType};
 
 pub async fn example_blockchain_info() -> anyhow::Result<()> {
-    // Create a local testnet client
     let client = BitcoinClient::new_local(BitcoinClientType::Testnet);
-    // Get blockchain information
     let blockchain_info = client.get_blockchain_info().await?;
     println!("Chain: {}", blockchain_info.chain);
     println!("Blocks: {}", blockchain_info.blocks);
     println!("Best block hash: {}", blockchain_info.bestblockhash);
     println!("Difficulty: {}", blockchain_info.difficulty);
+
     Ok(())
 }
 ```
 
-## Generate new addresses and verify addresses
+## 生成新地址和验证地址
 
 ```rust
 use bitcoin_lib::{BitcoinClient, BitcoinClientType, BitcoinCrypto};
@@ -53,7 +52,7 @@ pub async fn example_address_operations() -> anyhow::Result<()> {
 }
 ```
 
-## Generating Addresses from Private Keys
+## 加密操作 - 从私钥生成地址
 
 ```rust
 use bitcoin_lib::{BitcoinCrypto, BitcoinClientType};
@@ -84,7 +83,7 @@ pub fn example_crypto_operations() -> anyhow::Result<()> {
 }
 ```
 
-## Transaction Operations - Query UTXO and Create Transactions
+## 交易操作 - 查询 UTXO 和创建交易
 
 ```rust
 use bitcoin_lib::{BitcoinClient, BitcoinClientType};
@@ -92,13 +91,11 @@ use std::collections::HashMap;
 
 pub async fn example_transaction_operations() -> anyhow::Result<()> {
     let client = BitcoinClient::new_local(BitcoinClientType::Testnet);
-    // List unspent transaction outputs
     let unspent = client.list_unspent(1, 9999999, None).await?;
     println!("Found {} unspent outputs:", unspent.len());
     for utxo in &unspent {
         println!("  TXID: {}, Vout: {}, Amount: {}", utxo.txid, utxo.vout, utxo.amount);
     }
-    // Create a raw transaction (example - needs actual UTXOs)
     if !unspent.is_empty() {
         let inputs = vec![
             crate::CreateTxInput {
@@ -108,7 +105,6 @@ pub async fn example_transaction_operations() -> anyhow::Result<()> {
             }
         ];
         let mut outputs = HashMap::new();
-        // Send to a test address (replace with actual address)
         outputs.insert("tb1qexample...".to_string(), 0.001);
         let raw_tx = client.create_raw_transaction(inputs, outputs).await?;
         println!("Raw transaction: {}", raw_tx);
@@ -117,31 +113,25 @@ pub async fn example_transaction_operations() -> anyhow::Result<()> {
 }
 ```
 
-## Serialization and hashing
+## 序列化和哈希操作
 
 ```rust
 use bitcoin_lib::{Serialization, BitcoinCrypto};
 
 pub fn example_serialization_operations() -> anyhow::Result<()> {
-    // Test data for hashing
     let test_data = b"Hello, Bitcoin!";
-    // Calculate SHA256 hash
     let sha256_hash = BitcoinCrypto::sha256(test_data);
     println!("SHA256: {}", hex::encode(sha256_hash));
-    // Calculate double SHA256 hash
     let double_sha256_hash = BitcoinCrypto::double_sha256(test_data);
     println!("Double SHA256: {}", hex::encode(double_sha256_hash));
-    // Calculate hash160
     let hash160 = BitcoinCrypto::hash160(test_data);
     println!("Hash160: {}", hex::encode(hash160));
-    // Variable-length integer serialization
     let small_int = 150u64;
     let large_int = 100000u64;
     let serialized_small = Serialization::serialize_varint(small_int);
     let serialized_large = Serialization::serialize_varint(large_int);
     println!("Serialized {}: {:?}", small_int, serialized_small);
     println!("Serialized {}: {:?}", large_int, serialized_large);
-    // Deserialize variable-length integers
     let (deserialized_small, bytes_used_small) = Serialization::deserialize_varint(&serialized_small)?;
     let (deserialized_large, bytes_used_large) = Serialization::deserialize_varint(&serialized_large)?;
     println!("Deserialized small: {}, bytes used: {}", deserialized_small, bytes_used_small);
@@ -151,7 +141,7 @@ pub fn example_serialization_operations() -> anyhow::Result<()> {
 }
 ```
 
-## Batch RPC calls
+## 批量 RPC 调用
 
 ```rust
 use bitcoin_lib::{BitcoinClient, BitcoinClientType};
@@ -159,16 +149,15 @@ use serde_json::Value;
 
 pub async fn example_batch_calls() -> anyhow::Result<()> {
     let client = BitcoinClient::new_local(BitcoinClientType::Testnet);
-    // Prepare multiple RPC requests
+    // 准备多个 RPC 请求
     let requests = vec![
         ("getblockcount".to_string(), Value::Null),
         ("getbestblockhash".to_string(), Value::Null),
         ("getnetworkinfo".to_string(), Value::Null),
         ("getmempoolinfo".to_string(), Value::Null),
     ];
-    // Execute batch call
+    // 执行批量调用
     let results = client.batch_call(requests).await?;
-
     for (i, result) in results.iter().enumerate() {
         println!("Result {}: {}", i, result);
     }
